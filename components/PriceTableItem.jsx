@@ -19,6 +19,10 @@ const PriceTableItem = (props) => {
     }
   }, [])
 
+  const addPointToPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
   const versionItem = version.map((item, index) => {
     if (item != '') {
       return (
@@ -29,7 +33,7 @@ const PriceTableItem = (props) => {
   const priceItem = price.map((item, index) => {
     if (item != '') {
       return (
-        <div className="fw-bold" key={index}>{item}</div>
+        <div className="fw-bold" key={index}>{addPointToPrice(item)}</div>
       )
     }
   })
@@ -52,6 +56,7 @@ const PriceTableItem = (props) => {
             const response = await axios.post(`${homeAPI}/admin/delete-price-table`, body);
             const priceTableList = priceTable.filter(priceTable => priceTable.id !== id)
             setPriceTable(priceTableList);
+            props.refreshProduct()
             swtoast.success({
               text: "Bảng giá đã được xóa!!",
             });

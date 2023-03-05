@@ -37,6 +37,7 @@ const ProductAdmin = (props) => {
                         const response = await axios.post(`${homeAPI}/admin/delete`, body);
                         const productsList = products.filter(product => product.id !== id)
                         setProducts(productsList);
+                        props.refreshProduct()
                         swtoast.success({
                             text: "Xe đã được xóa!!",
                         });

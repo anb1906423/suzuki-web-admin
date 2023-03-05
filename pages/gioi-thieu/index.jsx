@@ -61,9 +61,13 @@ const Intro = () => {
                             {
                                 intro && intro.map((item, index) => {
                                     return (
-                                        <td key={index}>
-                                            {item.intro}
-                                        </td>
+                                        item.intro != '' ?
+                                            <td key={index}>
+                                                {item.intro}
+                                            </td> :
+                                            <td key={index}>
+                                                Hiện thông tin giới thiệu đang trống!
+                                            </td>
                                     )
                                 })
                             }

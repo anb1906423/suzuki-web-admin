@@ -4,7 +4,6 @@ import ProductAdmin from '../components/ProductAdmin'
 import Heading from '../components/Heading'
 import Head from 'next/head'
 import { swalert, swtoast } from "../mixins/swal.mixin";
-import Cookie, { useCookies } from 'react-cookie'
 import { useRouter } from 'next/router'
 import $ from 'jquery'
 import Link from 'next/link'
@@ -18,27 +17,17 @@ const adminPage = () => {
 
   const [products, setProducts] = useState([])
   // const [isLoading, setIsLoading] = useState(true)
-  const [cookies, setCookie] = useCookies(['user']);
-  const userCookie = cookies.user
-  const [roles, setRoles] = useState(0)
   const router = useRouter()
-  const [token, setToken] = useState('')
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    if (userCookie.roles != 1) {
-      $('.admin-page').hide()
-    }
-    setToken(userCookie.accessToken)
-    setRoles(userCookie.roles)
-
 
     const getProducts = async () => {
       fetch(`${homeAPI}/admin`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
+          'Authorization': 'Bearer ',
         }
       })
         .then((res) => res.json())
@@ -53,6 +42,11 @@ const adminPage = () => {
       controller.abort();
     }
   }, [])
+
+  const refreshProduct = async () => {
+    const result = await axios.get(homeAPI + '/admin')
+    setProducts(result.data)
+  }
 
 
   const handleDeleteAll = async () => {
@@ -109,6 +103,7 @@ const adminPage = () => {
                     src={item.src}
                     href={item.id}
                     created={item.created}
+                    refreshProduct={refreshProduct}
                   />
                 </div>
               )

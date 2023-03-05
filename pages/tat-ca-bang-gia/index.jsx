@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react'
-import PriceTableItem from '../components/PriceTableItem'
-import Heading from '../components/Heading'
+import PriceTableItem from '../../components/PriceTableItem'
+import Heading from '../../components/Heading'
 import Head from 'next/head'
 import axios from 'axios'
 import Link from 'next/link'
 import { useCookies } from 'react-cookie'
-import { swalert, swtoast } from "../mixins/swal.mixin";
+import { swalert, swtoast } from "../../mixins/swal.mixin";
 import $ from 'jquery'
-import { homeAPI } from '../config'
+import { homeAPI } from '../../config'
 
 const PriceTableManagePage = () => {
     const [priceTable, setPriceTable] = useState([])
@@ -53,6 +53,11 @@ const PriceTableManagePage = () => {
         }
     }, [])
 
+    const refreshProduct = async () => {
+        const result = await axios.get(homeAPI + '/admin/find-all-price-table')
+        setPriceTable(result.data)
+    }
+
     const handleDeleteAll = async () => {
         const body = {
             isDeleteAll: true
@@ -95,7 +100,7 @@ const PriceTableManagePage = () => {
                                 srcCar={item.srcCar}
                                 version={item.version}
                                 price={item.price}
-                            // onRowDelete={self.props.onRowDelete}
+                                refreshProduct={refreshProduct}
                             />
                         )
                     })
@@ -103,7 +108,7 @@ const PriceTableManagePage = () => {
                 }
             </div>
             <div className="button-group w-100 text-center">
-                <Link href="/them-bang-gia">
+                <Link href="/tat-ca-bang-gia/them-bang-gia">
                     <button type="button" className="btn btn-success text-center visit-add-product-page">Thêm bảng giá</button>
                 </Link>
                 {

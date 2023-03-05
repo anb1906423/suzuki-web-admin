@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react'
-import Heading from '../components/Heading'
+import Heading from '../../components/Heading'
 import Head from 'next/head'
 import axios from 'axios'
 import { useCookies } from 'react-cookie'
-import { swtoast } from "../mixins/swal.mixin";
+import { swtoast } from "../../mixins/swal.mixin";
 import $ from 'jquery'
-import { homeAPI } from '../config'
+import { homeAPI } from '../../config'
 import Router from 'next/router'
 
 const PriceTableManagePage = () => {
@@ -102,7 +102,7 @@ const PriceTableManagePage = () => {
             setPrice('')
             setSrcCar('')
             setErr('')
-            Router.push('/ql-bang-gia')
+            Router.push('/tat-ca-bang-gia')
         } catch (err) {
             if (!err?.response) {
                 setErr("No server response")
@@ -169,7 +169,7 @@ const PriceTableManagePage = () => {
                                 id="price"
                                 type="text"
                                 className=''
-                                placeholder="Ví dụ: 1.200.000.000, 560.000.000"
+                                placeholder="Ví dụ: 560000000"
                                 ref={priceRef}
                                 value={price1}
                                 onChange={(e) => setPrice1(e.target.value)}
@@ -193,7 +193,7 @@ const PriceTableManagePage = () => {
                                 id="price"
                                 type="text"
                                 className=''
-                                placeholder="Ví dụ: 1.200.000.000, 560.000.000"
+                                placeholder="Ví dụ: 560000000"
                                 ref={priceRef}
                                 value={price2}
                                 onChange={(e) => setPrice2(e.target.value)}
@@ -217,7 +217,7 @@ const PriceTableManagePage = () => {
                                 id="price"
                                 type="text"
                                 className=''
-                                placeholder="Ví dụ: 1.200.000.000, 560.000.000"
+                                placeholder="Ví dụ: 560000000"
                                 ref={priceRef}
                                 value={price3}
                                 onChange={(e) => setPrice3(e.target.value)}
@@ -241,7 +241,7 @@ const PriceTableManagePage = () => {
                                 id="price"
                                 type="text"
                                 className=''
-                                placeholder="Ví dụ: 1.200.000.000, 560.000.000"
+                                placeholder="Ví dụ: 560000000"
                                 ref={priceRef}
                                 value={price4}
                                 onChange={(e) => setPrice4(e.target.value)}

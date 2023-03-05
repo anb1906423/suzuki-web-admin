@@ -22,22 +22,65 @@ const ManagementContact = () => {
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th>Address</th>
-                            <th>Email</th>
-                            <th>Link to Facebook</th>
-                            <th>Phone Number</th>
+                            <th>#</th>
+                            <th>Thông tin liên hệ</th>
+                            <th>Chi tiết</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {contacts.map((user, index) => (
-                            <tr key={user.id}>
-                                <td>{user.address}</td>
-                                <td>{user.email}</td>
-                                <td>{user.linkToFace}</td>
-                                <td>{user.phoneNumber}</td>
+                    {contacts.map((contact, index) => (
+                        <tbody>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 1}</td>
+                                <td className='fw-bold'>Địa chỉ</td>
+                                <td>{contact.address}</td>
                             </tr>
-                        ))}
-                    </tbody>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 2}</td>
+                                <td className='fw-bold'>Email</td>
+                                <td>{contact.email}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 6}</td>
+                                <td className='fw-bold'>Zalo</td>
+                                <td>{contact.zalo}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 3}</td>
+                                <td className='fw-bold'>Số điện thoại</td>
+                                <td>{contact.phoneNumber}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 4}</td>
+                                <td className='fw-bold'>Facebook</td>
+                                <td>{contact.linkToFace}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 5}</td>
+                                <td className='fw-bold'>Messenger</td>
+                                <td>{contact.linkToMessenger}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 7}</td>
+                                <td className='fw-bold'>Youtube</td>
+                                <td>{contact.youtube}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 8}</td>
+                                <td className='fw-bold'>Instagram</td>
+                                <td>{contact.instagram}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 9}</td>
+                                <td className='fw-bold'>Tiktok</td>
+                                <td>{contact.tiktok}</td>
+                            </tr>
+                            <tr key={contact.id}>
+                                <td className='fw-bold'>{index + 10}</td>
+                                <td className='fw-bold'>Website</td>
+                                <td>{contact.website}</td>
+                            </tr>
+                        </tbody>
+                    ))}
                 </table>
             </div>
             <div className="button-group w-100 text-center">
