@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react'
 import Heading from '../../components/Heading'
 import Head from 'next/head'
 import axios from 'axios'
-import { useCookies } from 'react-cookie'
 import { swtoast } from "../../mixins/swal.mixin";
 import $ from 'jquery'
 import { homeAPI } from '../../config'
@@ -30,41 +29,12 @@ const PriceTableManagePage = () => {
     const [err, setErr] = useState('')
     const [versionCount, setVersionCount] = useState(2)
 
-    const [cookies, setCookies] = useCookies(['user'])
-    var userCookie
-    const [roles, setRoles] = useState(0)
-    const [token, setToken] = useState('')
-
-    useEffect(() => {
-        if (cookies.user != undefined) {
-            userCookie = cookies.user
-            setRoles(userCookie.roles)
-        }
-    })
-
     useEffect(() => {
         setVersion([version1, version2, version3, version4])
     }, [version1, version2, version3, version4])
     useEffect(() => {
         setPrice([price1, price2, price3, price4])
     }, [price1, price2, price3, price4])
-
-    useEffect(() => {
-        let isMounted = true;
-        const controller = new AbortController();
-        const userCookie = cookies.user
-
-        setToken(userCookie.accessToken)
-        setRoles(userCookie.roles)
-        if (userCookie.roles != 1) {
-            $('.price-table-manage-page').hide()
-        }
-
-        return () => {
-            isMounted = false;
-            controller.abort();
-        }
-    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -79,7 +49,6 @@ const PriceTableManagePage = () => {
             return
         }
         try {
-            const token = userCookie.accessToken
             const body = { nameCar, price, srcCar, version }
             console.log(body);
             const response = await axios.post(homeAPI + '/admin/add-price-table', body
@@ -87,7 +56,7 @@ const PriceTableManagePage = () => {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token,
+                        'Authorization': 'Bearer ',
                     },
                     withCredentials: true
                 }

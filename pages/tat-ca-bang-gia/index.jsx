@@ -4,40 +4,23 @@ import Heading from '../../components/Heading'
 import Head from 'next/head'
 import axios from 'axios'
 import Link from 'next/link'
-import { useCookies } from 'react-cookie'
 import { swalert, swtoast } from "../../mixins/swal.mixin";
 import $ from 'jquery'
 import { homeAPI } from '../../config'
 
 const PriceTableManagePage = () => {
     const [priceTable, setPriceTable] = useState([])
-    const [cookies, setCookies] = useCookies(['user'])
-    var userCookie
-    const [roles, setRoles] = useState(0)
-    const [token, setToken] = useState('')
 
-    useEffect(() => {
-        if (cookies.user != undefined) {
-            userCookie = cookies.user
-            setRoles(userCookie.roles)
-        }
-    })
     useEffect(() => {
         let isMounted = true;
         const controller = new AbortController();
-        const userCookie = cookies.user
 
-        setToken(userCookie.accessToken)
-        setRoles(userCookie.roles)
-        if (userCookie.roles != 1) {
-            $('.price-table-manage-page').hide()
-        }
         const getPriceTable = async () => {
             fetch(homeAPI + '/admin/find-all-price-table', {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token,
+                    'Authorization': 'Bearer ',
                 }
             })
                 .then((res) => res.json())
