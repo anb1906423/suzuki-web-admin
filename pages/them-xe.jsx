@@ -3,7 +3,6 @@ import axios from 'axios'
 import Heading from '../components/Heading'
 import Head from 'next/head'
 import { swtoast } from "../mixins/swal.mixin";
-import Cookie, { useCookies } from 'react-cookie'
 import { useRouter } from 'next/router'
 import $ from 'jquery'
 import CKeditor from '../components/CKeditor'
@@ -31,11 +30,7 @@ const adminPage = () => {
   const [err, setErr] = useState('')
 
   // const [isLoading, setIsLoading] = useState(true)
-  const [cookies, setCookie] = useCookies(['user']);
-  const userCookie = cookies.user
-  const [roles, setRoles] = useState(0)
   const router = useRouter()
-  const [token, setToken] = useState('')
 
   useEffect(() => {
     setEditorLoaded(true);
@@ -75,12 +70,6 @@ const adminPage = () => {
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    if (userCookie.roles != 1) {
-      $('.admin-page').hide()
-    }
-    console.log(roles);
-    setToken(userCookie.accessToken)
-    setRoles(userCookie.roles)
 
     return () => {
       isMounted = false;
@@ -109,7 +98,6 @@ const adminPage = () => {
       const typeCheck = type != '' ? type : typeProducts[0]
       type = typeCheck
 
-      const token = userCookie.accessToken
       const body = { name, price, description, src, type, newProduct }
       console.log(body);
       const response = await axios.post(ADDPRODUCT_URL, body

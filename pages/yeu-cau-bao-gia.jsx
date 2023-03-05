@@ -4,41 +4,25 @@ import { FaRegCopy } from 'react-icons/fa'
 import { swtoast, swalert } from "../mixins/swal.mixin";
 import Head from 'next/head'
 import axios from 'axios'
-import Cookie, { useCookies } from 'react-cookie'
 import { FaTrash } from 'react-icons/fa'
 import $ from 'jquery'
 import { homeAPI } from "../config"
 
 const inforCustomer = () => {
     const [users, setUsers] = useState([])
-    const [cookies, setCookie] = useCookies(['user']);
-    var userCookie
-    const [roles, setRoles] = useState(0)
     const [isConsulted, setIsConsulted] = useState(false)
     var isConsultedLenght = 0
 
     useEffect(() => {
-        if (cookies.user != '') {
-            userCookie = cookies.user
-            setRoles(userCookie.roles)
-        }
-    })
-
-    useEffect(() => {
         let isMounted = true;
-        const token = userCookie.accessToken
-        setRoles(userCookie.roles)
         const controller = new AbortController();
-        if (userCookie.roles != 1) {
-            $('.infor-customer').hide()
-        }
 
         const getAllUsers = async () => {
             fetch(`${homeAPI}`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token,
+                    'Authorization': 'Bearer ',
                 }
             })
                 .then((res) => res.json())
@@ -118,26 +102,24 @@ const inforCustomer = () => {
                 <tbody className="w-100 text-center">
                     {
                         users.map((item, index) => {
-                            if (item.roles !== 1) {
-                                return (
-                                    <tr title={converTime(item.created)} key={index} className="w-100 consult-tr d-flex align-items-center justify-content-around">
-                                        <td className="">{item.fullName}</td>
-                                        <td className="">
-                                            {item.phoneNumber}<FaRegCopy className="copy-icon" onClick={() => copy(item.phoneNumber)} />
-                                            {sliceEmail(item.email)}<FaRegCopy className="copy-icon" onClick={() => copy(item.email)} />
-                                        </td>
-                                        <td className="text-center date-register">{item.modelInterest}</td>
-                                        <td className="payment">
-                                            {
-                                                item.isCash == true ? 'Tiền mặt' : 'Trả góp'
-                                            }
-                                        </td>
-                                        <td className='consulted-box consulted-group'>
-                                            <FaTrash onClick={() => deleteUser(item.id)} />
-                                        </td>
-                                    </tr>
-                                )
-                            }
+                            return (
+                                <tr title={converTime(item.created)} key={index} className="w-100 consult-tr d-flex align-items-center justify-content-around">
+                                    <td className="">{item.fullName}</td>
+                                    <td className="">
+                                        {item.phoneNumber}<FaRegCopy className="copy-icon" onClick={() => copy(item.phoneNumber)} />
+                                        {sliceEmail(item.email)}<FaRegCopy className="copy-icon" onClick={() => copy(item.email)} />
+                                    </td>
+                                    <td className="text-center date-register">{item.modelInterest}</td>
+                                    <td className="payment">
+                                        {
+                                            item.isCash == true ? 'Tiền mặt' : 'Trả góp'
+                                        }
+                                    </td>
+                                    <td className='consulted-box consulted-group'>
+                                        <FaTrash onClick={() => deleteUser(item.id)} />
+                                    </td>
+                                </tr>
+                            )
                         })
                     }
                 </tbody>
