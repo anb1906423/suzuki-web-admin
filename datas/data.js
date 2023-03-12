@@ -9,7 +9,7 @@ export const childrenList = [
         'Yêu cầu báo giá'
     ],
     [
-        'Giới thiệu', 'Liên hệ'
+        'Tổng quan', 'Giới thiệu', 'Liên hệ', 'Cam kết'
     ],
 ]
 
@@ -24,7 +24,7 @@ export const urlchildrenList = [
         'yeu-cau-bao-gia',
     ],
     [
-        'gioi-thieu', 'lien-he'
+        "tong-quan", 'gioi-thieu', 'lien-he', 'cam-ket'
     ],
 ]
 

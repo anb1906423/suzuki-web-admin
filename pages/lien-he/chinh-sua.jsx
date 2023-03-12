@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Heading from '@/components/Heading'
 import Router from 'next/router'
 import axios from 'axios'
 import { homeAPI } from '@/config'
 import { swalert, swtoast } from '@/mixins/swal.mixin'
 
-const ManagementContact = () => {
+const EditContact = () => {
     const [contacts, setContacts] = useState([])
 
     const [address, setAddress] = useState('')
@@ -17,8 +17,9 @@ const ManagementContact = () => {
     const [instagram, setInstagram] = useState('')
     const [email, setEmail] = useState('')
     const [tiktok, setTiktok] = useState('')
-    const [contactId, setContactId] = useState('')
     const [website, setWebsite] = useState('')
+
+    const [err, setErr] = useState('')
 
     useEffect(() => {
         contacts && contacts.map((contact) => {
@@ -31,7 +32,6 @@ const ManagementContact = () => {
             setYoutube(contact.youtube)
             setTiktok(contact.tiktok)
             setZalo(contact.zalo)
-            setContactId(contact.id)
             setWebsite(contact.website)
         })
     }, [contacts])
@@ -44,9 +44,9 @@ const ManagementContact = () => {
         handleGetAllContacts()
     }, [])
 
-    const updateIntro = async () => {
+    const updateContact = async () => {
         try {
-            const result = await axios.put(homeAPI + `/contact/update/${contactId}`, {
+            const result = await axios.put(homeAPI + '/contact/update', {
                 address: address,
                 phoneNumber: phoneNumber,
                 email: email,
@@ -63,9 +63,31 @@ const ManagementContact = () => {
             })
             Router.push('/lien-he')
         } catch (error) {
-            swtoast.error({
-                text: error
+            setErr(error.response.data.message)
+            console.log(error);
+        }
+    }
+
+    const createContact = async () => {
+        try {
+            const result = await axios.post(homeAPI + '/contact/create', {
+                address: address,
+                phoneNumber: phoneNumber,
+                email: email,
+                linkToFace: linkToFace,
+                linkToMessenger: linkToMessenger,
+                youtube: youtube,
+                tiktok: tiktok,
+                instagram: instagram,
+                zalo: zalo,
+                website: website
             })
+            swtoast.success({
+                text: 'Thêm thông tin liên hệ thành công!'
+            })
+            Router.push('/lien-he')
+        } catch (error) {
+            setErr(error.response.data.message)
         }
     }
 
@@ -184,8 +206,14 @@ const ManagementContact = () => {
                     />
                 </div>
             </div>
+            <div className="err-box">
+                <p className='text-danger'>{err}</p>
+            </div>
             <div className="button-group w-100 text-center">
-                <span onClick={updateIntro}>
+                <span onClick={createContact}>
+                    <button type="button" className="btn btn-dark text-center visit-add-product-page">Tạo mới</button>
+                </span>
+                <span onClick={updateContact}>
                     <button type="button" className="btn btn-success text-center visit-add-product-page">Hoàn thành</button>
                 </span>
             </div>
@@ -193,4 +221,4 @@ const ManagementContact = () => {
     )
 }
 
-export default ManagementContact
+export default EditContact

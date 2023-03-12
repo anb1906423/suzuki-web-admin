@@ -7,7 +7,7 @@ import $ from 'jquery'
 import { homeAPI } from '../../config'
 import Router from 'next/router'
 
-const PriceTableManagePage = () => {
+const AddPriceTable = () => {
     const nameCarRef = useRef()
     const srcCarRef = useRef()
     const priceRef = useRef()
@@ -227,4 +227,4 @@ const PriceTableManagePage = () => {
     )
 }
 
-export default PriceTableManagePage
+export default AddPriceTable

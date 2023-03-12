@@ -9,7 +9,10 @@ import Router from 'next/router';
 const { TextArea } = Input;
 
 const EditIntroComponent = () => {
-    const [intro, setIntro] = useState([])
+    const [introList, setIntroList] = useState([])
+
+    const [intro, setIntro] = useState('')
+    const [err, setErr] = useState('')
     const introRef = useRef()
 
     useEffect(() => {
@@ -17,12 +20,20 @@ const EditIntroComponent = () => {
     })
 
     useEffect(() => {
-        const getIntro = async () => {
+        if(introList.length > 0) {
+            setIntro(introList[0].intro);
+            console.log(introList);
+        }
+    }, [introList])
+
+    useEffect(() => {
+        const getIntroList = async () => {
             const result = await axios.get(homeAPI + '/intro/get-all')
-            setIntro(result.data[0].intro);
+            console.log(result);
+            setIntroList(result.data);
         }
 
-        getIntro()
+        getIntroList()
     }, [])
 
     const updateIntro = async () => {
@@ -35,9 +46,24 @@ const EditIntroComponent = () => {
             })
             Router.push('/gioi-thieu')
         } catch (error) {
-            swtoast.error({
-                text: error
+            setErr(error.response.data.message)
+            console.log(error);
+
+        }
+    }
+
+
+    const createIntro = async () => {
+        try {
+            const result = await axios.post(homeAPI + '/intro/create', {
+                intro: intro,
             })
+            swtoast.success({
+                text: 'Thêm thông tin giới thiệu thành công!'
+            })
+            Router.push('/gioi-thieu')
+        } catch (error) {
+            setErr(error.response.data.message)
         }
     }
 
@@ -58,6 +84,9 @@ const EditIntroComponent = () => {
                     maxRows: 10,
                 }}
             />
+            <div className="err-box">
+                <p className='text-danger'>{err}</p>
+            </div>
             <div className="recommend-box">
                 <span>Gợi ý:</span>
                 <ol>
@@ -73,6 +102,9 @@ const EditIntroComponent = () => {
                 </ol>
             </div>
             <div className="button-group w-100 text-center">
+                <span onClick={createIntro}>
+                    <button type="button" className="btn btn-dark text-center visit-add-product-page">Tạo mới</button>
+                </span>
                 <span onClick={updateIntro}>
                     <button type="button" className="btn btn-success text-center visit-add-product-page">Hoàn thành</button>
                 </span>

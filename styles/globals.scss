@@ -2,9 +2,12 @@
 @import "./components/header.scss";
 @import './components/ProductAdmin.scss';
 @import './components/PriceTable.scss';
+@import './components/Counter.scss';
+@import './components/UndertakeItem.scss';
 @import './AdminPage.scss';
 @import './Contact.scss';
 @import './IntroPage.scss';
+@import './Undertake.scss';
 
 * {
   padding   : 0;
@@ -55,6 +58,10 @@ html {
 
 .text-main-color {
   color: #1d3565;
+}
+
+.err-box {
+  margin: 8px 0;
 }
 
 // .heading h2 {
