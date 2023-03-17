@@ -4,17 +4,16 @@ import axios from 'axios'
 import { swalert, swtoast } from "../mixins/swal.mixin";
 import { homeAPI } from "../config"
 import { FaTrash, FaEdit, FaClipboardList } from "react-icons/fa"
-import { Image } from 'antd';
+import { Image, Switch } from 'antd';
 
 const ProductAdmin = (props) => {
     const [products, setProducts] = useState([])
     const time = new Date(props.created)
     const createAt = time.toLocaleDateString()
+    const [disabledInputState, setDisabledInputState] = useState(false);
 
-    const makeNewPrice = (price) => {
-        if (price.includes('0')) {
-            return price + ' VNĐ'
-        } return price
+    const addPointToPrice = (price) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 
     const deleteProduct = async (id) => {
@@ -54,33 +53,97 @@ const ProductAdmin = (props) => {
             })
     }
 
-    const propsId = (id) => {
-        const url = 'http://localhost:3000/'
-        return url + id
-    }
+    const handleUpdateOutStandingState = async (outStanding) => {
+        if (outStanding) {
+            try {
+                setDisabledInputState(true)
+                await axios.put(homeAPI + '/admin/on-out-standing',
+                    { product_id: [props.id] })
+                setDisabledInputState(false)
+                props.refreshProduct()
+            } catch (e) {
+                console.log(e)
+                props.refreshProduct()
+                setDisabledInputState(false)
+                swtoast.error({ text: 'Xảy ra lỗi khi mở sản phẩm vui lòng thử lại!' })
+            }
+        } else {
+            try {
+                setDisabledInputState(true)
+                await axios.put(homeAPI + '/admin/off-out-standing',
+                    { product_id: [props.id] })
+                setDisabledInputState(false)
+                props.refreshProduct()
+            } catch (e) {
+                console.log(e)
+                props.refreshProduct()
+                setDisabledInputState(false)
+                swtoast.error({ text: 'Xảy ra lỗi khi tắt sản phẩm vui lòng thử lại!' })
+            }
+        }
+    };
+
+    const handleUpdateState = async (state) => {
+        if (state) {
+            try {
+                setDisabledInputState(true)
+                await axios.put(homeAPI + '/admin/on',
+                    { product_id: [props.id] })
+                setDisabledInputState(false)
+                props.refreshProduct()
+            } catch (e) {
+                console.log(e)
+                props.refreshProduct()
+                setDisabledInputState(false)
+                swtoast.error({ text: 'Xảy ra lỗi khi mở sản phẩm vui lòng thử lại!' })
+            }
+        } else {
+            try {
+                setDisabledInputState(true)
+                await axios.put(homeAPI + '/admin/off',
+                    { product_id: [props.id] })
+                setDisabledInputState(false)
+                props.refreshProduct()
+            } catch (e) {
+                console.log(e)
+                props.refreshProduct()
+                setDisabledInputState(false)
+                swtoast.error({ text: 'Xảy ra lỗi khi tắt sản phẩm vui lòng thử lại!' })
+            }
+        }
+    };
+
     return (
         <div className="table-responsive">
             <table className="table align-middle product-admin w-100">
                 <tbody className='w-100 text-center'>
                     <tr className="w-100 d-flex align-items-center justify-content-between">
                         <td className="">
-                            <Image src={props.src} alt={props.name}/>
+                            <Image src={props.src} alt={props.name} />
                         </td>
                         <td className="name"><p>{props.name}</p></td>
-                        <td className="text-danger fw-bold"><p>{makeNewPrice(props.price)}</p></td>
-                        <td className="createAt"><p>{createAt}</p></td>
+                        <td className="text-danger fw-bold"><p>{addPointToPrice(props.price)} VNĐ</p></td>
+                        <td className="createAt">
+                            <Switch
+                                checked={props.outStanding}
+                                onChange={handleUpdateOutStandingState}
+                                disabled={disabledInputState}
+                                size="small"
+                                title="Hiện / Ẩn sản phẩm ở trang chủ"
+                            />
+                        </td>
                         <td className="d-none d-sm-flex justify-content-around align-items-center manipulation">
-                            <Link title='Chi tiết xe' href={propsId(props.href)}>
-                                {/* <button className="btn btn-primary manipulation-btn">Xem</button> */}
-                                <FaClipboardList className="text-dark" />
-                            </Link>
+                            <Switch
+                                title="Hiện / Ẩn sản phẩm"
+                                checked={props.state}
+                                onChange={handleUpdateState}
+                                disabled={disabledInputState}
+                                size="small"
+                            />
                             <Link title='Cập nhật thông tin xe' href={props.href}>
                                 <FaEdit className="text-dark" />
                             </Link>
-                            {/* <Link href={propsId(props.href)}>
-                                <button className="btn btn-primary manipulation-btn">Xem</button>
-                            </Link> */}
-                            <FaTrash title='Xóa xe' className="text-dark" onClick={() => deleteProduct(props.href)} />
+                            <FaTrash title='Xóa xe' className="text-dark trash" onClick={() => deleteProduct(props.href)} />
                             {/* <button onClick={() => deleteProduct(props.href)} className="btn btn-danger manipulation-btn">Xóa</button> */}
                         </td>
                     </tr>

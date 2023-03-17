@@ -2,22 +2,12 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { FaTimes, FaEdit } from 'react-icons/fa'
 import { swalert, swtoast } from "../mixins/swal.mixin";
-import { useCookies } from 'react-cookie'
 import { homeAPI, feAPI } from "../config"
 
 const PriceTableItem = (props) => {
   const [priceTable, setPriceTable] = useState([])
   const version = props.version
   const price = props.price
-
-  const [cookies, setCookies] = useCookies(['user'])
-  const [roles, setRoles] = useState('')
-  useEffect(() => {
-    if (cookies.user != undefined) {
-      const userCookie = cookies.user
-      setRoles(userCookie.roles)
-    }
-  }, [])
 
   const addPointToPrice = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -104,10 +94,9 @@ const PriceTableItem = (props) => {
         </div>
       </div>
       {
-        roles == 1 ?
-          <div onClick={() => handleDeletePriceTable(props.id)} className="icon-delete-wrapper position-absolute">
-            <FaTimes />
-          </div> : ''
+        <div onClick={() => handleDeletePriceTable(props.id)} className="icon-delete-wrapper position-absolute">
+          <FaTimes />
+        </div>
       }
     </div>
   )

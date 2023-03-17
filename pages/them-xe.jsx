@@ -4,10 +4,11 @@ import Heading from '../components/Heading'
 import Head from 'next/head'
 import { swtoast } from "../mixins/swal.mixin";
 import { useRouter } from 'next/router'
-import $ from 'jquery'
 import CKeditor from '../components/CKeditor'
+import ColorSelector from '@/components/ColorSelector';
 const ADDPRODUCT_URL = `${homeAPI}/admin/add-product`
 import { homeAPI } from "../config"
+import { Input, Switch } from 'antd';
 
 const typeProducts = ['Xe du lịch', 'Xe thương mại']
 
@@ -18,11 +19,11 @@ const adminPage = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
+  const [outStanding, setOutStanding] = useState(false);
   const [src, setSrc] = useState([]);
- 
-  const [srcs, setSrcs] = useState([]);
 
-  const [imgOtherColor, setImgOtherColor] = useState([])
+  const [selectedColours, setSelectedColours] = useState([]);
+
   var [type, setType] = useState('');
   const [newProduct, setNewProduct] = useState(true);
   const [editorLoaded, setEditorLoaded] = useState(false);
@@ -34,48 +35,12 @@ const adminPage = () => {
 
   useEffect(() => {
     setEditorLoaded(true);
-  }, []);
-
-  useEffect(() => {
     nameRef.current.focus();
   }, [])
 
   useEffect(() => {
     console.log(src);
   }, [src])
-
-  const handleAddImg = () => {
-    setSrcs((prev) => {
-      const addImg = [...prev, job];
-      updateSrcs(addImg);
-      return addImg;
-    });
-
-    setJob("");
-  };
-
-  const handleDeleteImg = (index) => {
-    setJobs((prev) => {
-      const newJobs = jobs.filter((job, i) => i !== index);
-      updateSrcs(newJobs);
-      return newJobs;
-    });
-  };
-
-  const updateSrcs = (imgList) => {
-    JSON.stringify(localStorage.setItem("src", JSON.stringify(src)));
-    return imgList;
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    }
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,7 +63,7 @@ const adminPage = () => {
       const typeCheck = type != '' ? type : typeProducts[0]
       type = typeCheck
 
-      const body = { name, price, description, src, type, newProduct }
+      const body = { name, price, description, src, type, newProduct, outStanding }
       console.log(body);
       const response = await axios.post(ADDPRODUCT_URL, body
         ,
@@ -121,7 +86,7 @@ const adminPage = () => {
       swtoast.success({
         text: "Xe được thêm thành công!!",
       });
-      window.location.assign('/admin/tat-ca-xe')
+      window.location.assign('/')
     } catch (err) {
       if (!err?.response) {
         setErr("No server response")
@@ -151,47 +116,53 @@ const adminPage = () => {
       <div className='addProduct'>
         <Heading title='Thêm xe' />
         <div className="add-infor-product">
-          <form id='add-product-form' action="" onSubmit={handleSubmit}>
-            <label htmlFor="name">Tên xe:</label>
-            <input
-              id="name"
-              placeholder="Nhập tên xe"
-              type="text"
-              className="w-100"
-              ref={nameRef}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <div className="line-2 d-flex w-100 flex-row flex-wrap justify-content-around">
-              <div>
-                <label className="d-block" htmlFor="price">Giá:</label>
-                <input
-                  id="price"
-                  type="text"
-                  className=''
-                  placeholder="Ví dụ: 1.200.000.000, 560.000.000"
-                  ref={priceRef}
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+          <form className='row' id='add-product-form' action="" onSubmit={handleSubmit}>
+            <div className="col-6">
+
+              <label htmlFor="name">Tên xe:</label>
+              <Input
+                id="name"
+                placeholder="Nhập tên xe"
+                type="text"
+                className="w-100"
+                ref={nameRef}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <div className="line-2 d-flex w-100 flex-row flex-wrap justify-content-start">
+                <div>
+                  <label className="d-block" htmlFor="price">Giá:</label>
+                  <Input
+                    id="price"
+                    type="text"
+                    className=''
+                    placeholder="Ví dụ: 1200000000, 560000000"
+                    ref={priceRef}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                </div>
+                <ColorSelector
+                  selectedColours={selectedColours}
+                  setSelectedColours={setSelectedColours}
                 />
+                {/* <div>
+                  <label className="d-block" htmlFor="src">Link ảnh:</label>
+                  <Input
+                    id="src"
+                    type="text"
+                    placeholder="Dán link ảnh"
+                    ref={srcRef}
+                    // value={src}
+                    onChange={(e) => {
+                      setSrc(src => [e.target.value])
+                      // src.push(e.target.value)
+                    }}
+                  />
+                </div> */}
               </div>
-              <div>
-                <label className="d-block" htmlFor="src">Link ảnh:</label>
-                <input
-                  id="src"
-                  type="text"
-                  placeholder="Dán link ảnh"
-                  ref={srcRef}
-                  // value={src}
-                  onChange={(e) => {
-                    setSrc(src => [e.target.value])
-                    // src.push(e.target.value)
-                  }}
-                />
-              </div>
-            </div>
-            {/* <label className="d-block" htmlFor="src">Thêm ảnh:</label>
-            <input
+              {/* <label className="d-block" htmlFor="src">Thêm ảnh:</label>
+            <Input
               type="text"
               value={imgOtherColor}
               onChange={(e) => {
@@ -200,42 +171,74 @@ const adminPage = () => {
                 setImgOtherColor(imgOtherColor => [...imgOtherColor, e.target.value])
               }}
             /> */}
-            <div className="line-3 d-flex w-100 flex-row flex-wrap justify-content-left">
-              <div className="d-flex align-items-center">
-                <label htmlFor="type">Loại xe:</label>
-                <select name="" id="type" onChange={(e) => setType(e.target.value)} >
-                  {
-                    typeProducts.map((item, index) =>
-                      <option defaultValue={item} value={item} key={index} name={item}>{item}</option>
-                    )
-                  }
-                </select>
+              <div className="selected-table">
+                <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
+                <table className="table table-hover">
+                  <thead>
+                    <tr className=''>
+                      <th scope="col">Màu</th>
+                      <th scope="col">Ảnh</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                  </tbody>
+                </table>
               </div>
-              <div className="d-flex align-items-center">
-                <label onClick={() => setNewProduct(!newProduct)} htmlFor="newProduct">Xe mới:</label>
-                <input value={newProduct} onChange={(e) => setNewProduct(!newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
+              <div className="line-3 d-flex w-100 flex-row flex-wrap justify-content-left">
+                <div className="d-flex align-items-center">
+                  <label htmlFor="type">Loại xe:</label>
+                  <select name="" id="type" onChange={(e) => setType(e.target.value)} >
+                    {
+                      typeProducts.map((item, index) =>
+                        <option defaultValue={item} value={item} key={index} name={item}>{item}</option>
+                      )
+                    }
+                  </select>
+                </div>
+                <div className="d-flex align-items-center">
+                  <label onClick={() => setNewProduct(!newProduct)} htmlFor="newProduct">Xe mới:</label>
+                  <Input value={newProduct} onChange={(e) => setNewProduct(!newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
+                  <label onClick={() => setOutStanding(!outStanding)} htmlFor="outStanding">SP mổi bật:</label>
+                  <Switch
+                    checked={outStanding}
+                    onChange={(e) => setOutStanding(!outStanding)}
+                    id="outStanding"
+                    defaultChecked={outStanding}
+                    size='small'
+                    style={{
+                      margin: "0px 4px"
+                    }}
+                  />
+                </div>
               </div>
             </div>
-            <div>
-              <label htmlFor="description" className="d-block w-100">Mô tả:</label>
-              <CKeditor
-                Placeholder={{ placeholder: "Mô tả thông tin xe ..." }}
-                name="description"
-                id="description"
-                form="add-product-form"
-                data={description}
-                onChange={(data) => {
-                  setDescription(data);
-                }}
-                editorLoaded={editorLoaded}
-              />
+            <div className="col-6">
+              <div>
+                <label htmlFor="description" className="d-block w-100">Mô tả:</label>
+                <CKeditor
+                  Placeholder={{ placeholder: "Mô tả thông tin xe ..." }}
+                  name="description"
+                  id="description"
+                  form="add-product-form"
+                  data={description}
+                  onChange={(data) => {
+                    setDescription(data);
+                  }}
+                  editorLoaded={editorLoaded}
+                />
+              </div>
             </div>
             <p className="text-danger">{err}</p>
-            <div className="submit-wrapper w-100 text-center"><button onClick={(e) => handleSubmit(e)} type="submit" className="submit-btn">THÊM XE</button></div>
+            <div className="button-group w-100 text-center">
+              <span onClick={(e) => handleSubmit(e)}>
+                <button type="button" className="btn btn-success text-center visit-add-product-page">Thêm xe</button>
+              </span>
+            </div>
           </form>
         </div>
       </div>
-      {/* <input value={src} onChange={(e) => setSrc(e.target.value)} />
+      {/* <Input value={src} onChange={(e) => setSrc(e.target.value)} />
       <button onClick={handleAddImg}>submit</button> */}
 
       {/* {srcs.map((src, index) => (

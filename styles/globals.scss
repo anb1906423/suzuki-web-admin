@@ -8,6 +8,7 @@
 @import './Contact.scss';
 @import './IntroPage.scss';
 @import './Undertake.scss';
+@import './Login.scss';
 
 * {
   padding   : 0;
@@ -29,6 +30,10 @@ html {
   opacity         : .2;
   z-index         : 100;
   transition      : all .2s linear;
+}
+
+.trash {
+  cursor: pointer;
 }
 
 // a {

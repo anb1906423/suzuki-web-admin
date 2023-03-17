@@ -62,7 +62,7 @@ const inforCustomer = () => {
                         }
                         console.log(`Error: ${err.message}`);
                         swtoast.error({
-                            text: "Đã xảy ra lỗi khi xóa yêu cầu báo giá. Vui lòng reload lại trang!",
+                            text: "Đã xảy ra lỗi hoặc không thể xóa user này!",
                         });
                     }
                 }
@@ -116,7 +116,7 @@ const inforCustomer = () => {
                                         }
                                     </td>
                                     <td className='consulted-box consulted-group'>
-                                        <FaTrash onClick={() => deleteUser(item.id)} />
+                                        <FaTrash className='trash' onClick={() => deleteUser(item.id)} />
                                     </td>
                                 </tr>
                             )
@@ -128,7 +128,7 @@ const inforCustomer = () => {
                 <tbody className="w-100 text-center">
                     <tr className="fs-6 w-100">
                         <th className="">Tổng cộng:</th>
-                        <th className="">{users.length - 2}</th>
+                        <th className="">{users.length}</th>
                     </tr>
                 </tbody>
             </table>

@@ -1,6 +1,6 @@
 export const childrenList = [
     [
-        'Tất cả xe'
+        'Tất cả xe', 'Màu xe'
     ],
     [
         'Tất cả bảng giá'
@@ -15,7 +15,7 @@ export const childrenList = [
 
 export const urlchildrenList = [
     [
-        '/',
+        '/', 'color'
     ],
     [
         'tat-ca-bang-gia',

@@ -87,7 +87,7 @@ const adminPage = () => {
               <th title='Ảnh xe' className="">Ảnh</th>
               <th title='Tên xe' className="name">Tên xe</th>
               <th title='Giá xe' className="">Giá</th>
-              <th title="Thời gian thêm xe" className="createAt">Thời gian tạo</th>
+              <th title="Thời gian thêm xe" className="createAt">Nổi bật</th>
               <th title="Thao tác với xe" className="manipulation">Thao tác</th>
             </tr>
           </thead>
@@ -103,6 +103,9 @@ const adminPage = () => {
                     src={item.src}
                     href={item.id}
                     created={item.created}
+                    state={item.state}
+                    id={item.id}
+                    outStanding={item.outStanding}
                     refreshProduct={refreshProduct}
                   />
                 </div>
