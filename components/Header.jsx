@@ -40,7 +40,7 @@ const HeaderComponent = ({ children }) => {
         if (!isLoggedIn) {
             Router.push('/login')
         }
-    }, [isLoggedIn])
+    }, [])
 
     const {
         token: { colorBgContainer },
