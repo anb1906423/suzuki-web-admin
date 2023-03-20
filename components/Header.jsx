@@ -31,6 +31,8 @@ const items2 = [CarOutlined, DollarOutlined, UserOutlined, InfoCircleOutlined].m
 
 const HeaderComponent = ({ children }) => {
     const params = useRouter()
+
+    const router = useRouter()
     const [temp, setTemp] = useState([])
     const isLoggedIn = useSelector((state) => state.admin.isLoggedIn)
     const adminInfor = useSelector((state) => state.admin.adminInfo)
@@ -38,11 +40,11 @@ const HeaderComponent = ({ children }) => {
     const dispatch = useDispatch()
 
 
-    // useEffect(() => {
-    //     if (!isLoggedIn) {
-    //         Router.replace('/login')
-    //     }
-    // }, [isLoggedIn])
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.replace('/login')
+        }
+    }, [isLoggedIn])
 
     const {
         token: { colorBgContainer },

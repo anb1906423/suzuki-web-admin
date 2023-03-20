@@ -17,11 +17,11 @@ const login = () => {
     const isLoggedIn = useSelector((state) => state.admin.isLoggedIn);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (isLoggedIn) {
-          Router.back()
-        }
-      }, [isLoggedIn])
+    // useEffect(() => {
+    //     if (isLoggedIn) {
+    //       Router.back()
+    //     }
+    //   }, [isLoggedIn])
 
     useEffect(() => {
         emailRef.current.focus()
