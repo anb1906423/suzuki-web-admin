@@ -38,11 +38,11 @@ const HeaderComponent = ({ children }) => {
     const dispatch = useDispatch()
 
 
-    useEffect(() => {
-        if (!isLoggedIn) {
-            Router.replace('/login')
-        }
-    }, [isLoggedIn])
+    // useEffect(() => {
+    //     if (!isLoggedIn) {
+    //         Router.replace('/login')
+    //     }
+    // }, [isLoggedIn])
 
     const {
         token: { colorBgContainer },
