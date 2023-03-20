@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head';
 import Router, { useRouter } from 'next/router';
 import { childrenList, sideBarList, urlchildrenList } from '../datas/data'
@@ -31,16 +31,18 @@ const items2 = [CarOutlined, DollarOutlined, UserOutlined, InfoCircleOutlined].m
 
 const HeaderComponent = ({ children }) => {
     const params = useRouter()
+    const [temp, setTemp] = useState([])
     const isLoggedIn = useSelector((state) => state.admin.isLoggedIn)
     const adminInfor = useSelector((state) => state.admin.adminInfo)
 
     const dispatch = useDispatch()
 
+
     useEffect(() => {
         if (!isLoggedIn) {
-            Router.push('/login')
+            Router.replace('/login')
         }
-    }, [])
+    }, [isLoggedIn])
 
     const {
         token: { colorBgContainer },
