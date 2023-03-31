@@ -101,6 +101,7 @@ const adminPage = () => {
                     name={item.name}
                     price={item.price}
                     src={item.src}
+                    imageTemp={item.imageTemp}
                     href={item.id}
                     created={item.created}
                     state={item.state}

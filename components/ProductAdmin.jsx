@@ -119,7 +119,7 @@ const ProductAdmin = (props) => {
                 <tbody className='w-100 text-center'>
                     <tr className="w-100 d-flex align-items-center justify-content-between">
                         <td className="">
-                            <Image src={props.src} alt={props.name} />
+                            <Image src={props.src || props.imageTemp} alt={props.name} />
                         </td>
                         <td className="name"><p>{props.name}</p></td>
                         <td className="text-danger fw-bold"><p>{addPointToPrice(props.price)} VNĐ</p></td>

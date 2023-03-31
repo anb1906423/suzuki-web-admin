@@ -18,6 +18,7 @@ const EditProduct = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
+    const [moreInfo, setMoreInfo] = useState('');
     const [src, setSrc] = useState('');
     var [type, setType] = useState('');
     const [products, setProducts] = useState([])
@@ -53,7 +54,7 @@ const EditProduct = () => {
                             setName(item.name);
                             setPrice(item.price);
                             setDescription(item.description)
-                            setSrc(item.src);
+                            setSrc(item.src || item.imageTemp);
                             setType(item.type);
                             setNewProduct(item.newProduct)
 
@@ -90,7 +91,7 @@ const EditProduct = () => {
         }
         try {
 
-            const body = { name, price, description, src, type, newProduct }
+            const body = { name, price, description, moreInfo, src, type, newProduct }
             console.log(body);
             const response = await axios.put(EDITPRODUCT_URL + `${productId}`, body
                 ,
@@ -138,7 +139,7 @@ const EditProduct = () => {
                 <Heading title='Cập nhật thông tin xe' />
                 <div className="add-infor-product">
                     <form id='add-product-form' action="" onSubmit={handleEditProduct}>
-                        <label htmlFor="name">Tên xe:</label>
+                        <label htmlFor="name" className='fw-bold'>Tên xe:</label>
                         <input
                             id="name"
                             placeholder="Nhập tên xe"
@@ -150,7 +151,7 @@ const EditProduct = () => {
                         />
                         <div className="line-2 d-flex w-100 flex-row flex-wrap justify-content-around">
                             <div>
-                                <label className="d-block" htmlFor="price">Giá:</label>
+                                <label className="d-block fw-bold" htmlFor="price">Giá:</label>
                                 <input
                                     id="price"
                                     type="text"
@@ -162,7 +163,7 @@ const EditProduct = () => {
                                 />
                             </div>
                             <div>
-                                <label className="d-block" htmlFor="src">Link ảnh:</label>
+                                <label className="d-block fw-bold" htmlFor="src">Link ảnh:</label>
                                 <input
                                     id="src"
                                     type="text"
@@ -177,7 +178,7 @@ const EditProduct = () => {
                             setErr('Hiện tại chưa thể thay đổi thông tin này!')
                         }}>
                             <div className="d-flex align-items-center">
-                                <label htmlFor="type">Loại xe:</label>
+                                <label className='fw-bold' htmlFor="type">Loại xe:</label>
                                 <select disabled name="" id="type" onChange={(e) => setType(e.target.value)} >
                                     <option value={type}>{type}</option>
                                     <option value={type == 'Xe du lịch' ? 'Xe tải' : 'Xe du lịch'}>{type == 'Xe du lịch' ? 'Xe tải' : 'Xe du lịch'}</option>
@@ -185,12 +186,12 @@ const EditProduct = () => {
                             </div>
                             {/* Hiện tại thay đổi được từ true -> false, không thay đổi được ngược lại */}
                             <div className="d-flex align-items-center">
-                                <label htmlFor="newProduct">Xe mới:</label>
+                                <label htmlFor="newProduct" className="fw-bold">Xe mới:</label>
                                 <input disabled value={newProduct} onChange={(e) => setNewProduct(!newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
                             </div>
                         </div>
                         <div>
-                            <label htmlFor="description" className="d-block w-100">Mô tả:</label>
+                            <label htmlFor="description" className="d-block w-100 fw-bold">Mô tả:</label>
                             <CKeditor
                                 init="Hello"
                                 Placeholder={{ placeholder: "Mô tả thông tin xe ..." }}
@@ -202,6 +203,20 @@ const EditProduct = () => {
                                     setDescription(data);
                                 }}
                                 editorLoaded={editorLoaded}
+                            />
+                        </div>
+                        <div style={{ margin: "10px 0" }} className="col-12">
+                            <label htmlFor="more-info" className="d-block w-100 fw-bold">Thông tin chi tiết:</label>
+                            <CKeditor
+                                editorLoaded={editorLoaded}
+                                id="more-info"
+                                Placeholder={{ placeholder: "Thông tin chi tiết xe ..." }}
+                                name="more-info"
+                                form="add-product-form"
+                                data={moreInfo}
+                                onChange={(data) => {
+                                    setMoreInfo(data);
+                                }}
                             />
                         </div>
                         <p className="text-danger">{err}</p>

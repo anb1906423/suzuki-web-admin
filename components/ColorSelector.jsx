@@ -30,6 +30,7 @@ const ColorSelector = ({ selectedColours, setSelectedColours }) => {
                 onRemove={setSelectedColours}
                 displayValue="name"
                 hidePlaceholder={true}
+                disable={true}
             />
         </div>
     )

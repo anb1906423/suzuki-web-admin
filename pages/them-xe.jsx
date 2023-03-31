@@ -5,6 +5,7 @@ import Head from 'next/head'
 import { swtoast } from "../mixins/swal.mixin";
 import { useRouter } from 'next/router'
 import CKeditor from '../components/CKeditor'
+import RowVariant from '@/components/RowVariant';
 import ColorSelector from '@/components/ColorSelector';
 const ADDPRODUCT_URL = `${homeAPI}/admin/add-product`
 import { homeAPI } from "../config"
@@ -19,10 +20,12 @@ const adminPage = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
+  const [moreInfo, setMoreInfo] = useState('');
   const [outStanding, setOutStanding] = useState(false);
-  const [src, setSrc] = useState([]);
+  const [imageTemp, setImageTemp] = useState('');
 
   const [selectedColours, setSelectedColours] = useState([]);
+  const [fileList, setFileList] = useState([]);
 
   var [type, setType] = useState('');
   const [newProduct, setNewProduct] = useState(true);
@@ -33,14 +36,27 @@ const adminPage = () => {
   // const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const handleAddImage = (newImage) => {
+    setFileList([...fileList, newImage]);
+  }
+
+  const handleRemoveImage = (index, file) => {
+    const newImgList = [...fileList];
+    newImgList[index] = newImgList[index].filter(f => f.uid !== file.uid);
+    setFileList(newImgList);
+  }
+
+  const handlePreviewImage = (index, file) => {
+    const newImgList = [...fileList];
+    const img = newImgList[index].find(f => f.uid === file.uid);
+    img.previewImage = file.url || file.preview;
+    setFileList(newImgList);
+  }
+
   useEffect(() => {
     setEditorLoaded(true);
     nameRef.current.focus();
   }, [])
-
-  useEffect(() => {
-    console.log(src);
-  }, [src])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +70,7 @@ const adminPage = () => {
       priceRef.current.focus();
       return
     }
-    if (!src) {
+    if (!imageTemp) {
       setErr("Link ảnh không được để trống!");
       srcRef.current.focus();
       return
@@ -63,7 +79,7 @@ const adminPage = () => {
       const typeCheck = type != '' ? type : typeProducts[0]
       type = typeCheck
 
-      const body = { name, price, description, src, type, newProduct, outStanding }
+      const body = { name, price, description, moreInfo, imageTemp, type, newProduct, outStanding }
       console.log(body);
       const response = await axios.post(ADDPRODUCT_URL, body
         ,
@@ -78,8 +94,8 @@ const adminPage = () => {
       setName('')
       setPrice('')
       setDescription('')
-      setSrc('')
-      setErr('')
+      setImageTemp('')
+      setMoreInfo('')
       console.log(JSON.stringify(response?.data));
       console.log(response?.data);
       console.log(JSON.stringify(response))
@@ -146,20 +162,17 @@ const adminPage = () => {
                   selectedColours={selectedColours}
                   setSelectedColours={setSelectedColours}
                 />
-                {/* <div>
+                <div>
                   <label className="d-block" htmlFor="src">Link ảnh:</label>
                   <Input
                     id="src"
                     type="text"
                     placeholder="Dán link ảnh"
                     ref={srcRef}
-                    // value={src}
-                    onChange={(e) => {
-                      setSrc(src => [e.target.value])
-                      // src.push(e.target.value)
-                    }}
+                    value={imageTemp}
+                    onChange={(e) => setImageTemp(e.target.value)}
                   />
-                </div> */}
+                </div>
               </div>
               {/* <label className="d-block" htmlFor="src">Thêm ảnh:</label>
             <Input
@@ -173,42 +186,12 @@ const adminPage = () => {
             /> */}
               <div className="selected-table">
                 <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
-                <table className="table table-hover">
-                  <thead>
-                    <tr className=''>
-                      <th scope="col">Màu</th>
-                      <th scope="col">Ảnh</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    
-                  </tbody>
-                </table>
-              </div>
-              <div className="line-3 d-flex w-100 flex-row flex-wrap justify-content-left">
-                <div className="d-flex align-items-center">
-                  <label htmlFor="type">Loại xe:</label>
-                  <select name="" id="type" onChange={(e) => setType(e.target.value)} >
-                    {
-                      typeProducts.map((item, index) =>
-                        <option defaultValue={item} value={item} key={index} name={item}>{item}</option>
-                      )
-                    }
-                  </select>
-                </div>
-                <div className="d-flex align-items-center">
-                  <label onClick={() => setNewProduct(!newProduct)} htmlFor="newProduct">Xe mới:</label>
-                  <Input value={newProduct} onChange={(e) => setNewProduct(!newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
-                  <label onClick={() => setOutStanding(!outStanding)} htmlFor="outStanding">SP mổi bật:</label>
-                  <Switch
-                    checked={outStanding}
-                    onChange={(e) => setOutStanding(!outStanding)}
-                    id="outStanding"
-                    defaultChecked={outStanding}
-                    size='small'
-                    style={{
-                      margin: "0px 4px"
-                    }}
+                <div className="">
+                  <RowVariant
+                    colourSelectedList={selectedColours}
+                    listImg={fileList}
+                    onRemoveImage={handleRemoveImage}
+                    onAddImage={handleAddImage}
                   />
                 </div>
               </div>
@@ -228,6 +211,47 @@ const adminPage = () => {
                   editorLoaded={editorLoaded}
                 />
               </div>
+              <div style={{ margin: "8px 0" }} className="line-3 d-flex w-100 flex-row flex-wrap justify-content-left">
+                <div className="d-flex align-items-center">
+                  <label htmlFor="type">Loại xe:</label>
+                  <select name="" id="type" onChange={(e) => setType(e.target.value)} >
+                    {
+                      typeProducts.map((item, index) =>
+                        <option defaultValue={item} value={item} key={index} name={item}>{item}</option>
+                      )
+                    }
+                  </select>
+                </div>
+                <div style={{ margin: "6px 0" }} className="d-flex align-items-center">
+                  <label onClick={() => setNewProduct(!newProduct)} htmlFor="newProduct">Xe mới:</label>
+                  <Input value={newProduct} onChange={(e) => setNewProduct(!newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
+                  <label onClick={() => setOutStanding(!outStanding)} htmlFor="outStanding">SP mổi bật:</label>
+                  <Switch
+                    checked={outStanding}
+                    onChange={(e) => setOutStanding(!outStanding)}
+                    id="outStanding"
+                    defaultChecked={outStanding}
+                    size='small'
+                    style={{
+                      margin: "0px 4px"
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div style={{ margin: "10px 0" }} className="col-12">
+              <label htmlFor="more-info" className="d-block w-100 fw-bold">Thông tin chi tiết:</label>
+              <CKeditor
+                editorLoaded={editorLoaded}
+                id="more-info"
+                Placeholder={{ placeholder: "Thông tin chi tiết xe ..." }}
+                name="more-info"
+                form="add-product-form"
+                data={moreInfo}
+                onChange={(data) => {
+                  setMoreInfo(data);
+                }}
+              />
             </div>
             <p className="text-danger">{err}</p>
             <div className="button-group w-100 text-center">

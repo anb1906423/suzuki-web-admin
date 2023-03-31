@@ -83,6 +83,7 @@ const inforCustomer = () => {
     function sliceEmail(email) {
         return email.slice(0, 10)
     }
+    console.log(users);
     return (
         <div className="infor-customer w-100">
             <Head>
@@ -102,24 +103,26 @@ const inforCustomer = () => {
                 <tbody className="w-100 text-center">
                     {
                         users.map((item, index) => {
-                            return (
-                                <tr title={converTime(item.created)} key={index} className="w-100 consult-tr d-flex align-items-center justify-content-around">
-                                    <td className="">{item.fullName}</td>
-                                    <td className="">
-                                        {item.phoneNumber}<FaRegCopy className="copy-icon" onClick={() => copy(item.phoneNumber)} />
-                                        {sliceEmail(item.email)}<FaRegCopy className="copy-icon" onClick={() => copy(item.email)} />
-                                    </td>
-                                    <td className="text-center date-register">{item.modelInterest}</td>
-                                    <td className="payment">
-                                        {
-                                            item.isCash == true ? 'Tiền mặt' : 'Trả góp'
-                                        }
-                                    </td>
-                                    <td className='consulted-box consulted-group'>
-                                        <FaTrash className='trash' onClick={() => deleteUser(item.id)} />
-                                    </td>
-                                </tr>
-                            )
+                            if (item.roles == 0) {
+                                return (
+                                    <tr title={converTime(item.created)} key={index} className="w-100 consult-tr d-flex align-items-center justify-content-around">
+                                        <td className="">{item.fullName}</td>
+                                        <td className="">
+                                            {item.phoneNumber}<FaRegCopy className="copy-icon" onClick={() => copy(item.phoneNumber)} />
+                                            {sliceEmail(item.email)}<FaRegCopy className="copy-icon" onClick={() => copy(item.email)} />
+                                        </td>
+                                        <td className="text-center date-register">{item.modelInterest}</td>
+                                        <td className="payment">
+                                            {
+                                                item.isCash == true ? 'Tiền mặt' : 'Trả góp'
+                                            }
+                                        </td>
+                                        <td className='consulted-box consulted-group'>
+                                            <FaTrash className='trash' onClick={() => deleteUser(item.id)} />
+                                        </td>
+                                    </tr>
+                                )
+                            }
                         })
                     }
                 </tbody>
@@ -128,7 +131,7 @@ const inforCustomer = () => {
                 <tbody className="w-100 text-center">
                     <tr className="fs-6 w-100">
                         <th className="">Tổng cộng:</th>
-                        <th className="">{users.length}</th>
+                        <th className="">{users.length - 2}</th>
                     </tr>
                 </tbody>
             </table>
