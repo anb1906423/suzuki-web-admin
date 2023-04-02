@@ -91,7 +91,7 @@ const EditProduct = () => {
         }
         try {
 
-            const body = { name, price, description, moreInfo, src, type, newProduct }
+            const body = { name, price, description, moreInfo, imageTemp: src, type, newProduct }
             console.log(body);
             const response = await axios.put(EDITPRODUCT_URL + `${productId}`, body
                 ,
