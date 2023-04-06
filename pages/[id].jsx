@@ -8,24 +8,39 @@ import CKeditor from '../components/CKeditor'
 const EDITPRODUCT_URL = `${homeAPI}/admin/`
 import { homeAPI, feAPI } from "../config"
 
-const EditProduct = () => {
-    const router = useRouter()
+const EditProduct = ({ car }) => {
+    const router = useRouter();
     const productId = router.query.id;
-
+    const [carDetail, setCarDetail] = useState({});
+    const { name, price, description, moreInfo, src, type, newProduct } = carDetail;
     const nameRef = useRef();
     const priceRef = useRef();
     const srcRef = useRef();
-    const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
-    const [description, setDescription] = useState('');
-    const [moreInfo, setMoreInfo] = useState('');
-    const [src, setSrc] = useState('');
-    var [type, setType] = useState('');
-    const [products, setProducts] = useState([])
-    const [newProduct, setNewProduct] = useState(() => {
-        if (products.id == productId) return products.newProduct
-    });
+    const [productName, setProductName] = useState(name);
+    const [productPrice, setProductPrice] = useState(price || '');
+    const [productDescription, setProductDescription] = useState(description || '');
+    const [productMoreInfo, setProductMoreInfo] = useState(moreInfo || '');
+    const [productSrc, setProductSrc] = useState(src || '');
+    const [productType, setProductType] = useState(type || '');
+    const [productNewProduct, setProductNewProduct] = useState(newProduct);
     const [editorLoaded, setEditorLoaded] = useState(false);
+
+    useEffect(() => {
+        setProductName(carDetail.name);
+        setProductPrice(carDetail.price || '');
+        setProductDescription(carDetail.description || '');
+        setProductMoreInfo(carDetail.moreInfo || '');
+        setProductSrc(carDetail.src || carDetail.imageTemp || '');
+        setProductType(carDetail.type || '');
+        setProductNewProduct(carDetail.newProduct);
+    }, [carDetail]);
+
+    useEffect(() => {
+        const selectedCar = car.find(item => item.id == productId);
+        setCarDetail(selectedCar || {});
+    }, [car, productId]);
+
+    console.log(carDetail, name);
 
     const [err, setErr] = useState('')
 
@@ -33,66 +48,34 @@ const EditProduct = () => {
         setEditorLoaded(true);
     }, []);
 
-    useEffect(() => {
-        let isMounted = true;
-        const controller = new AbortController();
-
-        const getProducts = async () => {
-            fetch(`${homeAPI}/admin`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ',
-                }
-            })
-                .then((res) => res.json())
-                .then((products) => {
-                    setProducts(products)
-                    console.log(products);
-                    products.map((item, index) => {
-                        if (item.id === productId) {
-                            setName(item.name);
-                            setPrice(item.price);
-                            setDescription(item.description)
-                            setSrc(item.src || item.imageTemp);
-                            setType(item.type);
-                            setNewProduct(item.newProduct)
-
-                            console.log(description);
-                            console.log(newProduct);
-                            console.log(type);
-                        }
-                    })
-                })
-        }
-        getProducts();
-        return () => {
-            isMounted = false;
-            controller.abort();
-        }
-    }, [])
-
     const handleEditProduct = async (e) => {
         e.preventDefault();
-        if (!name) {
+        if (!productName) {
             setErr("Tên xe không được để trống!");
             nameRef.current.focus();
             return
         }
-        if (!price) {
+        if (!productPrice) {
             setErr("Giá xe không được để trống!");
             priceRef.current.focus();
             return
         }
-        if (!src) {
+        if (!productSrc) {
             setErr("Link ảnh không được để trống!");
             srcRef.current.focus();
             return
         }
         try {
 
-            const body = { name, price, description, moreInfo, imageTemp: src, type, newProduct }
-            console.log(body);
+            const body = {
+                name: productName,
+                price: productPrice,
+                description: productDescription,
+                moreInfo: productMoreInfo,
+                imageTemp: productSrc,
+                type: productType,
+                newProduct: productNewProduct
+            }
             const response = await axios.put(EDITPRODUCT_URL + `${productId}`, body
                 ,
                 {
@@ -146,8 +129,8 @@ const EditProduct = () => {
                             type="text"
                             className="w-100"
                             ref={nameRef}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={productName}
+                            onChange={(e) => setProductName(e.target.value)}
                         />
                         <div className="line-2 d-flex w-100 flex-row flex-wrap justify-content-around">
                             <div>
@@ -158,8 +141,8 @@ const EditProduct = () => {
                                     className=''
                                     placeholder="Ví dụ: 1.200.000.000, 560.000.000"
                                     ref={priceRef}
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
+                                    value={productPrice}
+                                    onChange={(e) => setProductPrice(e.target.value)}
                                 />
                             </div>
                             <div>
@@ -169,8 +152,8 @@ const EditProduct = () => {
                                     type="text"
                                     placeholder="Dán link ảnh"
                                     ref={srcRef}
-                                    value={src}
-                                    onChange={(e) => setSrc(e.target.value)}
+                                    value={productSrc}
+                                    onChange={(e) => setProductSrc(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -180,14 +163,14 @@ const EditProduct = () => {
                             <div className="d-flex align-items-center">
                                 <label className='fw-bold' htmlFor="type">Loại xe:</label>
                                 <select disabled name="" id="type" onChange={(e) => setType(e.target.value)} >
-                                    <option value={type}>{type}</option>
-                                    <option value={type == 'Xe du lịch' ? 'Xe tải' : 'Xe du lịch'}>{type == 'Xe du lịch' ? 'Xe tải' : 'Xe du lịch'}</option>
+                                    <option value={productType}>{productType}</option>
+                                    <option value={productType == 'Xe du lịch' ? 'Xe tải' : 'Xe du lịch'}>{productType == 'Xe du lịch' ? 'Xe tải' : 'Xe du lịch'}</option>
                                 </select>
                             </div>
                             {/* Hiện tại thay đổi được từ true -> false, không thay đổi được ngược lại */}
                             <div className="d-flex align-items-center">
                                 <label htmlFor="newProduct" className="fw-bold">Xe mới:</label>
-                                <input disabled value={newProduct} onChange={(e) => setNewProduct(!newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
+                                <input disabled value={productNewProduct} onChange={(e) => setProductNewProduct(!carDetail.newProduct)} id="newProduct" type="checkbox" defaultChecked={newProduct} />
                             </div>
                         </div>
                         <div>
@@ -198,9 +181,9 @@ const EditProduct = () => {
                                 name="description"
                                 id="description"
                                 form="add-product-form"
-                                data={description}
+                                data={productDescription}
                                 onChange={(data) => {
-                                    setDescription(data);
+                                    setProductDescription(data);
                                 }}
                                 editorLoaded={editorLoaded}
                             />
@@ -213,9 +196,9 @@ const EditProduct = () => {
                                 Placeholder={{ placeholder: "Thông tin chi tiết xe ..." }}
                                 name="more-info"
                                 form="add-product-form"
-                                data={moreInfo}
+                                data={productMoreInfo}
                                 onChange={(data) => {
-                                    setMoreInfo(data);
+                                    setProductMoreInfo(data);
                                 }}
                             />
                         </div>
@@ -229,3 +212,26 @@ const EditProduct = () => {
 }
 
 export default EditProduct
+
+
+export async function getServerSideProps({ params }) {
+    const { id } = params;
+
+    try {
+        const res2 = await fetch(homeAPI + '/admin');
+        const allCars = await res2.json();
+
+        const car = allCars
+
+        return {
+            props: {
+                car,
+            },
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            notFound: true,
+        };
+    }
+}
