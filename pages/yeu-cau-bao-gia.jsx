@@ -95,7 +95,7 @@ const inforCustomer = () => {
                     <tr className="fs-6 w-100 align-items-center d-flex justify-content-around">
                         <th className="">Họ và tên</th>
                         <th className="">TT Liên hệ</th>
-                        <th className="date-register">Dòng xe</th>
+                        <th className="date-register">Thông tin</th>
                         <th className="payment">Hình thức</th>
                         <th className="consulted-box">Đã báo giá</th>
                     </tr>
@@ -109,9 +109,12 @@ const inforCustomer = () => {
                                         <td className="">{item.fullName}</td>
                                         <td className="">
                                             {item.phoneNumber}<FaRegCopy className="copy-icon" onClick={() => copy(item.phoneNumber)} />
-                                            {sliceEmail(item.email)}<FaRegCopy className="copy-icon" onClick={() => copy(item.email)} />
                                         </td>
-                                        <td className="text-center date-register">{item.modelInterest}</td>
+                                        <td className="text-center date-register">
+                                            {item.modelInterest}
+                                            <br />
+                                            {item.province}
+                                            </td>
                                         <td className="payment">
                                             {
                                                 item.isCash == true ? 'Tiền mặt' : 'Trả góp'
